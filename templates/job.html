@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+
+<form action="" method="post">
+    <p style="font-size:35px"><b>Adding a Job</b></p>
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.job_title.label }}<br>
+        {{ form.job_title(class="form-control") }}<br>
+        {% for error in form.job_title.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.team_leader.label }}<br>
+        {{ form.team_leader(class="form-control") }}<br>
+        {% for error in form.team_leader.errors %}
+            <p content="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.size.label }}<br>
+        {{ form.size(class="form-control") }}<br>
+        {% for error in form.size.errors %}
+            <p content="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.collaborators.label }}<br>
+        {{ form.collaborators(class="form-control") }}<br>
+        {% for error in form.collaborators.errors %}
+            <p content="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>{{ form.is_finished() }} {{ form.is_finished.label }}</p>
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    {{message}}
+</form>
+{% endblock %}
