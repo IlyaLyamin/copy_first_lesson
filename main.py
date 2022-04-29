@@ -1,6 +1,6 @@
 from flask import Flask, redirect, render_template, request, abort, jsonify
 from data import db_session
-from flask_login import LoginManager, login_user, login_required, current_user
+from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 from data.users import User
 from forms.login import LoginForm
 from forms.job_form import JobForm
@@ -81,6 +81,12 @@ def registration():
     return render_template('registration.html',
                            form=form,
                            title='Регистрация')
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect('/')
 
 
 @app.route('/job', methods=['GET', 'POST'])
