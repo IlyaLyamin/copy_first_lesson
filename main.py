@@ -5,6 +5,7 @@ from flask_login import LoginManager, login_user, login_required, current_user, 
 from forms.login import LoginForm
 from forms.job_form import JobForm
 from forms.register_form import RegisterForm
+from forms.department_form import DepartmentForm
 
 from data.jobs import Jobs
 from data.users import User
@@ -24,7 +25,10 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 def index():
     db_sess = db_session.create_session()
     jobs = db_sess.query(Jobs).all()
-    return render_template("index.html", jobs=jobs, title="Главная")
+    return render_template("index.html",
+                           jobs=jobs,
+                           title="Главная",
+                           j_or_d='j')
 
 
 @app.errorhandler(404)
@@ -50,7 +54,9 @@ def login():
         return render_template('login.html',
                                message="Неправильный логин или пароль",
                                form=form)
-    return render_template('login.html', title='Авторизация', form=form)
+    return render_template('login.html',
+                           title='Авторизация',
+                           form=form)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -109,8 +115,10 @@ def add_jobs():
         db_sess.merge(current_user)
         db_sess.commit()
         return redirect("/")
-    return render_template('job.html', title='Добавление задачи',
-                           form=form)
+    return render_template('job.html',
+                           title='Добавление задачи',
+                           form=form,
+                           j_or_d='j')
 
 
 @app.route('/job/<int:id>', methods=['GET', 'POST'])
@@ -147,7 +155,8 @@ def edit_jobs(id):
             abort(404)
     return render_template('job.html',
                            title='Редактирование новости',
-                           form=form
+                           form=form,
+                           j_or_d='j'
                            )
 
 
@@ -164,6 +173,77 @@ def job_delete(id):
     else:
         abort(404)
     return redirect('/')
+
+
+@app.route('/departments')
+def departments():
+    db_sess = db_session.create_session()
+    dep = db_sess.query(Department).all()
+    return render_template('departments.html',
+                           dep=dep)
+
+
+@app.route('/add_department', methods=['GET', 'POST'])
+def add_department():
+    form = DepartmentForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        dep = db_sess.query(Department).filter(Department.title == form.title.data).first()
+        if dep:
+            return render_template('cerate_department.html',
+                                   form=form,
+                                   message='Department with this name, was created')
+        dep = Department()
+        dep.title = form.title.data
+        dep.chief = form.chief.data
+        dep.members = form.members.data
+        dep.email = form.email.data
+        db_sess.add(dep)
+        db_sess.commit()
+        return redirect('/departments')
+    return render_template('cerate_department.html',
+                           form=form)
+
+
+@app.route('/edit_department/<int:id>', methods=['GET', 'POST'])
+def edit_department(id):
+    form = DepartmentForm()
+    if request.method == 'GET':
+        db_sess = db_session.create_session()
+        dep = db_sess.query(Department).filter(Department.id == id).first()
+        if dep:
+            form.title.data = dep.title
+            form.chief.data = dep.chief
+            form.members.data = dep.members
+            form.email.data = dep.email
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        dep = db_sess.query(Department).filter(Department.id == id).first()
+        if dep:
+            dep.title = form.title.data
+            dep.chief = form.chief.data
+            dep.members = form.members.data
+            dep.email = form.email.data
+            db_sess.commit()
+            return redirect('/departments')
+        else:
+            abort(404)
+    return render_template('cerate_department.html',
+                           form=form)
+
+
+@app.route('/delete_department/<int:id>', methods=['GET', 'POST'])
+def delete_department(id):
+    db_sess = db_session.create_session()
+    dep = db_sess.query(Department).filter(Department.id == id).first()
+    if dep:
+        db_sess.delete(dep)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/departments')
 
 
 def main():
