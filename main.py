@@ -1,11 +1,14 @@
 from flask import Flask, redirect, render_template, request, abort, jsonify
 from data import db_session
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user
-from data.users import User
+
 from forms.login import LoginForm
 from forms.job_form import JobForm
-from data.jobs import Jobs
 from forms.register_form import RegisterForm
+
+from data.jobs import Jobs
+from data.users import User
+from data.departments import Department
 import datetime
 from data import db_session, jobs_api
 from flask import make_response
