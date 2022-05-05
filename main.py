@@ -1,15 +1,20 @@
-from flask import Flask, redirect, render_template, request, abort, jsonify
+from flask import Flask, redirect, render_template, request, abort, jsonify, url_for
 from data import db_session
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user
+
+from utils import save_picture
 
 from forms.login import LoginForm
 from forms.job_form import JobForm
 from forms.register_form import RegisterForm
 from forms.department_form import DepartmentForm
+from forms.galery_form import GaleryForm
 
 from data.jobs import Jobs
 from data.users import User
 from data.departments import Department
+from data.photo import Photo
+
 import datetime
 from data import db_session, jobs_api
 from flask import make_response
@@ -244,6 +249,27 @@ def delete_department(id):
     else:
         abort(404)
     return redirect('/departments')
+
+
+@app.route('/galery', methods=['GET', 'POST'])
+def galery():
+    form = GaleryForm()
+    if request.method == 'GET':
+        db_sess = db_session.create_session()
+        photos_from_base = db_sess.query(Photo).all()
+        photos = []
+        for i in photos_from_base:
+            photos.append(url_for('static', filename='profile_pics/' + current_user.name + '/' + i.photo))
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        photo = Photo()
+        photo_file = save_picture(form.photo.data)
+        photo.photo = photo_file
+        db_sess.add(photo)
+        db_sess.commit()
+        return redirect('/galery')
+    ln = len(photos_from_base)
+    return render_template('galery.html', photos=photos_from_base, form=form, ln=ln)
 
 
 def main():
