@@ -272,6 +272,11 @@ def galery():
     return render_template('galery.html', photos=photos_from_base, form=form, ln=ln)
 
 
+@app.route('/carousel')
+def carousel():
+    return render_template('carousel.html')
+
+
 def main():
     db_session.global_init("db/marsian.sqlite")
     app.register_blueprint(jobs_api.blueprint)
