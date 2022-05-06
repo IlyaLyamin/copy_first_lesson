@@ -21,6 +21,7 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     email = sqlalchemy.Column(sqlalchemy.String, name="электронная почта", unique=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, default="123123", name="хэшированый пароль")
     modified_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now(), name="дата изменения")
+    photo = sqlalchemy.Column(sqlalchemy.String)
     jobs = orm.relation("Jobs", back_populates='user')
 
     def __repr__(self):

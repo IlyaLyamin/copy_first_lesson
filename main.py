@@ -9,6 +9,7 @@ from forms.job_form import JobForm
 from forms.register_form import RegisterForm
 from forms.department_form import DepartmentForm
 from forms.galery_form import GaleryForm
+from forms.load_photo_form import UserPhotoForm
 
 from data.jobs import Jobs
 from data.users import User
@@ -269,13 +270,23 @@ def galery():
         db_sess.commit()
         return redirect('/galery')
     ln = len(photos_from_base)
-    return render_template('galery.html', photos=photos_from_base, form=form, ln=ln)
+    if photos_from_base:
+        return render_template('galery.html', photos=photos_from_base, form=form, ln=ln)
+    else:
+        return render_template('galery.html', form=form,)
 
 
 @app.route('/carousel')
 def carousel():
     return render_template('carousel.html')
 
+
+# @app.route('/load_photo')
+# def load_photo():
+#     form = UserPhotoForm()
+#     if request.method == "GET":
+#         db_sess = db_session.create_session()
+#
 
 def main():
     db_session.global_init("db/marsian.sqlite")
