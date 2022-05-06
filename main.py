@@ -2,7 +2,7 @@ from flask import Flask, redirect, render_template, request, abort, jsonify, url
 from data import db_session
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 
-from utils import save_picture
+from utils import save_picture, save_user_picture
 
 from forms.login import LoginForm
 from forms.job_form import JobForm
@@ -281,12 +281,23 @@ def carousel():
     return render_template('carousel.html')
 
 
-# @app.route('/load_photo')
-# def load_photo():
-#     form = UserPhotoForm()
-#     if request.method == "GET":
-#         db_sess = db_session.create_session()
-#
+@app.route('/load_photo', methods=['GET', 'POST'])
+def load_photo():
+    form = UserPhotoForm()
+    if request.method == "GET":
+        db_sess = db_session.create_session()
+        photo_n = (db_sess.query(User).filter(User.id == current_user.id).first()).photo
+        if not photo_n:
+            return render_template('load_photo.html', form=form)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter(User.id == current_user.id).first()
+        user.photo = save_user_picture(form.photo.data)
+        db_sess.commit()
+        return redirect('/load_photo')
+    photo = url_for('static', filename='img/user_photo/' + current_user.name + '/' + photo_n)
+    return render_template('load_photo.html', form=form, photo=photo)
+
 
 def main():
     db_session.global_init("db/marsian.sqlite")
