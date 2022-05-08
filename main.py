@@ -264,7 +264,10 @@ def galery():
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         photo = Photo()
-        photo_file = save_picture(form.photo.data)
+        if form.photo.data:
+            photo_file = save_picture(form.photo.data)
+        else:
+            return redirect('/galery')
         photo.photo = photo_file
         db_sess.add(photo)
         db_sess.commit()
