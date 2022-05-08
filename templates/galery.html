@@ -10,38 +10,40 @@
             </h1>
             <label><strong>    </strong></label>
             {% if photos and ln %}
-            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
-                            class="active" aria-current="true" aria-label="Slide 1"></button>
-                    {% for i in range(1, ln) %}
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ i }}"
-                            aria-label="Slide {{ i + 1 }}"></button>
-                    {% endfor %}
-                </div>
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img src="{{url_for('static', filename='img/profile_pics/' + current_user.name + '/' + photos[0].photo)}}"
-                             class="d-block w-100">
+            <form enctype="multipart/form-data">
+                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
+                                class="active" aria-current="true" aria-label="Slide 1"></button>
+                        {% for i in range(1, ln) %}
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ i }}"
+                                aria-label="Slide {{ i + 1 }}"></button>
+                        {% endfor %}
                     </div>
-                    {% for i in photos[1::] %}
-                    <div class="carousel-item">
-                        <img src="{{url_for('static', filename='img/profile_pics/' + current_user.name + '/' + i.photo)}}"
-                             class="d-block w-100">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="{{ photos[0] }}"
+                                 class="d-block w-100">
+                        </div>
+                        {% for i in photos[1::] %}
+                        <div class="carousel-item">
+                            <img src="{{ i }}"
+                                 class="d-block w-100">
+                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+                            data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+                            data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
-                        data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
-                        data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
+            </form>
             {% endif %}
             <form action="" method="POST" enctype="multipart/form-data">
                 {{ form.hidden_tag() }}

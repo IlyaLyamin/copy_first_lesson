@@ -260,7 +260,7 @@ def galery():
         photos_from_base = db_sess.query(Photo).all()
         photos = []
         for i in photos_from_base:
-            photos.append(url_for('static', filename='profile_pics/' + current_user.name + '/' + i.photo))
+            photos.append(url_for('static', filename='img/profile_pics/' + i.photo))
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         photo = Photo()
@@ -273,8 +273,8 @@ def galery():
         db_sess.commit()
         return redirect('/galery')
     ln = len(photos_from_base)
-    if photos_from_base:
-        return render_template('galery.html', photos=photos_from_base, form=form, ln=ln)
+    if photos:
+        return render_template('galery.html', photos=photos, form=form, ln=ln)
     else:
         return render_template('galery.html', form=form,)
 
